@@ -118,7 +118,7 @@ Webpack supports all browsers that are ES5-compliant. It also needs Promise for 
 
 First I created a typical npm project, with two main files inside - index.html and src/index.js. The project structure looks like this:
 
-![Directory](docs/images/Webpack0.png "Project Structure")
+![Directory](docs/images/image1.png "Project Structure")
 
 *   My guess for why index.html is outside is because it’s used as a template file, rather than a javascript source file. index.js is what webpack will really be working with to create the bundles.
 *   The text for each of the files will be displayed here:
@@ -202,7 +202,7 @@ This folder will be created in order to place all the code that will be distribu
 
 The new directory structure will look like this:
 
-![Directory](docs/images/Webpack1.png "Project Structure")
+![Directory](docs/images/image2.png "Project Structure")
 
 #### Import bundle
 
@@ -257,7 +257,7 @@ Out of the box, webpack doesn’t need configuration. However, when you start us
 <p id="gdcalert3" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/Webpack2.png). Store image on your image server and adjust path/filename if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert4">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
 
 
-![Directory](docs/images/Webpack2.png "Project Structure")
+![Directory](docs/images/image3.png "Project Structure")
 
 #### webpack.config.js
 
@@ -312,4 +312,4 @@ We can then use `npm run build` to create the distribution files.
 
 This is a basic setup of a webpack project. Next we’ll be working with assets such as images and fonts. The project now looks like this:
 
-![Directory](images/Webpack3.png "Project Structure")
+![Directory](docs/images/image4.png "Project Structure")
