@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import './style.css';
 import Cliffside from './assets/images/Cliffside.jpg';
+import Data from './data.xml';
 
 function component() {
   const element = document.createElement('div');
@@ -25,6 +26,8 @@ function component() {
   element.appendChild(imageWrapper);
   element.appendChild(myImage);
   element.appendChild(starWarsHeader);
+
+  console.log(Data);
 
   return element;
 }

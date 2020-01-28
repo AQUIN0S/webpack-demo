@@ -629,3 +629,75 @@ module.exports = {
     mode: 'development'
 };
 ```
+
+Time to add some data files:
+
+![Project Directory](./docs/images/image7.png "Project Directory")
+
+`/src/data.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<note>
+    <to>Mary</to>
+    <from>John</from>
+    <heading>Reminder</heading>
+    <body>Call Cindy on Tuesday</body>
+</note>
+```
+
+`src/index.js`
+
+```javascript
+import _ from 'lodash';
+import './style.css';
+import Cliffside from './assets/images/Cliffside.jpg';
+import Data from './data.xml';
+
+function component() {
+  const element = document.createElement('div');
+
+  element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+  element.classList.add('hello');
+
+  // Adding image element
+  const myImage = new Image(500, 500);
+  myImage.src = Cliffside;
+
+  // Adding generic element with an image background defined in css
+  const imageWrapper = document.createElement('div');
+  imageWrapper.classList.add("imageWrapper");
+
+  // Adding font
+  const starWarsHeader = document.createElement('h2');
+  starWarsHeader.classList.add("starWarsHeader");
+  starWarsHeader.appendChild(document.createTextNode("Testing font"));
+
+  element.appendChild(document.createElement("br"));
+  element.appendChild(imageWrapper);
+  element.appendChild(myImage);
+  element.appendChild(starWarsHeader);
+
+  console.log(Data);
+
+  return element;
+}
+
+document.body.appendChild(component());
+```
+
+### Global Assets
+
+The neat thing about all this, is it means that you can have your directory structure grouped up in a much more intuitive way. Usually, an `/assets` folder is created that holds all your static files, however with webpack what you can do is group components that rely on each other together. Splitting it into components makes code a lot more portable. An example is shown here:
+
+```diff
+- |- /assets
++ |– /components
++ |  |– /my-component
++ |  |  |– index.jsx
++ |  |  |– index.css
++ |  |  |– icon.svg
++ |  |  |– img.png
+```
+
+Here you can split your code into components, which are closely grouped together and can be ported together.
