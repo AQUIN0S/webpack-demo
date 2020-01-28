@@ -914,3 +914,5 @@ module.exports = {
 ### The Manifest
 
 This is mostly for information - Webpack and its plugins use a manifest which keeps track of how all the modules map to the output bundles. This would be a good place to start if you're interested in working with webpack's output in other ways. Its data can be extracted into a json file using the `WebpackManifestPlugin`.
+
+The link to the directory can be found [here](https://github.com/AQUIN0S/webpack-demo/tree/a803a8377d1873c1bef0c838490c59f112e7c6a9 "Directory structure").
