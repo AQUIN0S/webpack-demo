@@ -700,4 +700,46 @@ The neat thing about all this, is it means that you can have your directory stru
 + |  |  |– img.png
 ```
 
-Here you can split your code into components, which are closely grouped together and can be ported together.
+Here it's shown you can split your code into components, which are closely grouped together and can be ported together.
+
+The project structure at this point can be found [here](https://github.com/AQUIN0S/webpack-demo/tree/84c141355e50f9e59515387f735800b0564c2677 "Asset Management git repo")
+
+### Wrapping Up
+
+The next guide will not be using a lot of the different assets used in this chapter, so we'll just clear up some of the files now.
+
+![New Project Structure](./docs/images/image8.png "Project Structure")
+
+`src/index.js`
+
+```javascript
+import _ from 'lodash';
+
+function component() {
+  const element = document.createElement('div');
+
+  element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+  element.classList.add('hello');
+
+    return element;
+}
+
+document.body.appendChild(component());
+
+```
+
+`webpack.config.js`
+
+```javascript
+const path = require('path');
+
+module.exports = {
+    entry: './src/index.js',
+    output: {
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    },
+    mode: 'development'
+};
+```
+
