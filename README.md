@@ -743,3 +743,174 @@ module.exports = {
 };
 ```
 
+## Output Management
+
+I'll admit I'm not fully following along with this introduction yet, as they're saying we're manually adding all our assets into `index.html`, which I guess is true, but then also `index.html` only includes the `bundle.js` script path... I guess I'll find out as we go through this what they mean.
+
+### Preparation
+
+First we need to setup this project a little differently from the previous section, adding a file. (And yes, from now on I'll just use diff blocks to represent the project structure):
+
+```diff
+  webpack-demo
+  |- package.json
+  |- webpack.config.js
+  |- dist/
+  |- src/
+    |- index.js
++   |- print.js
+  |- node_modules/
+```
+
+`src/print.js`
+
+```javascript
+function printMe() {
+    console.log("I get called from print.js!");
+}
+
+export default printMe;
+```
+
+`src/index.js`
+
+```javascript
+import _ from 'lodash';
+import printMe from "./print";
+
+function component() {
+  const element = document.createElement('div');
+  const btn = document.createElement("button");
+
+  element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+  
+  btn.appendChild(document.createTextNode("Click me and check the console!"));
+  btn.onclick = printMe;
+
+  element.appendChild(btn);
+
+  return element;
+}
+
+document.body.appendChild(component());
+```
+
+Also need to update the `dist/index.html` file in preparation for webpack splitting entries:
+
+`dist/index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Output Management</title>
+    <script src="./print.bundle.js"></script>
+</head>
+<body>
+    <script src="./app.bundle.js"></script>
+</body>
+</html>
+```
+
+From the looks of it, `dist/index.html` is expecting webpack to spit out two bundles this time: `app.bundle.js` and `print.bundle.js`.
+
+This will require adjusting the config:
+
+`webpack.config.js`
+
+```javascript
+const path = require('path');
+
+module.exports = {
+    entry: {
+        app: './src/index.js',
+        print: './src/print.js'
+    },
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    },
+    mode: 'development'
+};
+```
+
+Oh, ok I think I see what the problem is: when we run `npm run build` with this configuration, everything will work fine since two `bundle.js` files will be generated in `dist/`: `app.bundle.js` and `print.bundle.js`.
+
+This is fine for now... but as soon as we want to add another one to the config, like `foo.bundle.js`, that does some random other function, then we'll need to edit `index.html` once again to allow it to include the new bundle. This... is not ideal.
+
+This situation can be fixed with the `HtmlWebpackPlugin`.
+
+### Setting up HtmlWebpackPlugin
+
+First, install the plugin and adjust the config file:
+
+```bash
+npm install --save-dev html-webpack-plugin
+```
+
+`webpack.config.js`
+
+```javascript
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+    entry: {
+        app: './src/index.js',
+        print: './src/print.js'
+    },
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: "Output Management"
+        })
+    ],
+    mode: 'development'
+};
+```
+
+Now, HtmlWebpackPlugin will generate its own `dist/index.html` file, which will overwrite the existing one we have in the `dist/` folder. This new `dist/index.html` file will dynamically add all the scripts defined in the config file each time.
+
+### Cleaning up the `dist/` folder
+
+There's a handy plugin to manage cleaning the `dist/` folder before each build, so that only used files are generated. This plugin is called the `clean-webpack-plugin`, so we'll install that.
+
+```bash
+npm install --save-dev clean-webpack-plugin
+```
+
+`webpack.config.js`
+
+```javascript
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+module.exports = {
+    entry: {
+        app: './src/index.js',
+        print: './src/print.js'
+    },
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    },
+    plugins: [
+        new CleanWebpackPlugin(),
+        new HtmlWebpackPlugin({
+            title: "Output Management"
+        })
+    ],
+    mode: 'development'
+};
+```
+
+### The Manifest
+
+This is mostly for information - Webpack and its plugins use a manifest which keeps track of how all the modules map to the output bundles. This would be a good place to start if you're interested in working with webpack's output in other ways. Its data can be extracted into a json file using the `WebpackManifestPlugin`.
